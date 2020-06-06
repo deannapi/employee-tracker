@@ -1,5 +1,14 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
+let cTable = require("console.table");
+
+const db = new Database({
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "Shifting Shadows",
+    database: "cms"
+  });
 
 // Main prompt
 async function startSel() {
@@ -24,7 +33,7 @@ async function startSel() {
 async function addDept() {
     inquirer.prompt([{
         type: 'input',
-        name: 'newDept';
+        name: 'newDept',
         message: 'What is the name of the new department?'
     }])
     // then add new dept to database
