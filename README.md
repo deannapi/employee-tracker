@@ -12,6 +12,8 @@ A CMS interface that uses Node.js, Inquirer and MySQL to build a command-line ap
 * [Node.js](https://nodejs.org/en/)
 * [MySQL2](https://www.npmjs.com/package/mysql2)
 * [Inquirer](https://www.npmjs.com/package/inquirer)
+* [Insomnia](https://insomnia.rest/)
+* [Console.table]{https://www.npmjs.com/package/console.table}
 
 
 ## :bulb: Description
