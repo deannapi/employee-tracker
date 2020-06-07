@@ -39,6 +39,14 @@ A CMS interface that uses Node.js, Inquirer and MySQL to build a command-line ap
         WHEN I choose to update an employee role
         THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
 
+  Extra App Capabilities:
+  
+        UPDATE employee managers.
+        VIEW employees by manager.
+        VIEW employees by department.
+        DELETE employees, roles, and departments. 
+        VIEW the total utilized budget of a departments - i.e., the combined salaries of all employees in that department. 
+
 ## :movie_camera: Demo
 
 
