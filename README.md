@@ -43,3 +43,18 @@ A CMS interface that uses Node.js, Inquirer and MySQL to build a command-line ap
 
 
 ## :memo: Instructions
+`npm init`
+
+`npm install inquirer`
+
+`npm install express sqlite3`
+
+`npm install mysql`
+
+`npm install jest --save-dev`
+
+`npm install console-table`
+
+To run the application, use the following command:
+
+`node index.js`

@@ -4,7 +4,11 @@
   "description": "A CMS interface that uses Node.js, Inquirer and MySQL to build a command-line application to manage a company's employee database.",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "sqlite3 db/employees.db < db/schema.sql",
+    "seed": "sqlite3 db/employees.db < db/seeds.sql",
+    "db": "sqlite3 db/employees.db",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +30,7 @@
     "console.table": "^0.10.0",
     "express": "^4.17.1",
     "inquirer": "^7.1.0",
+    "mysql": "^2.18.1",
     "sqlite3": "^4.2.0"
   },
   "devDependencies": {

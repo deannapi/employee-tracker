@@ -1,21 +1,55 @@
 const inquirer = require('inquirer');
-const fs = require('fs');
 let cTable = require("console.table");
+let Database = require('./async-db');
+// const mysql = require('sqlite3');
 
+// Connection to server
 const db = new Database({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "Shifting Shadows",
-    database: "cms"
-  });
+    password: "MochaBe@r16",
+    database: "empTracker"
+});
 
+// Get table data before calling inquirer prompts
+async function getRoles() {
+    let query = "SELECT title FROM role";
+    const rows = await db.query(query);
+    let roles = [];
+    for (const row of rows) {
+        roles.push(row.title);
+    }
+    return roles;
+};
+
+async function getManagers() {
+    let query = "SELECT * FROM employee WHERE manager_id IS NULL";
+    const rows = await db.query(query);
+    let managers = [];
+    for (const manager of rows) {
+        managers.push(manager.first_name + " " + manager.last_name);
+    }
+    return managers;
+};
+
+async function getDepartments() {
+    let query = "SELECT name FROM department";
+    const rows = await db.query(query);
+    let departments = [];
+    for (const department of rows) {
+        departments.push(department.name);
+    }
+    return departments;
+}
+
+// ALL INQUIRER PROMPTS
 // Main prompt
 async function startSel() {
     inquirer.prompt([{
         type: 'list',
         name: 'startSelection',
-        message: 'Select an option to begin.'
+        message: 'Select an option to begin.',
         choices: [
             'View all departments.', 
             'View all roles.',
@@ -41,6 +75,7 @@ async function addDept() {
 
 // When I choose to 'add a role'
 async function addRole() {
+    const departments = await getDepartments();
     inquirer.prompt([{
         type: 'input',
         name: 'roleName',
@@ -54,7 +89,8 @@ async function addRole() {
     {
         type: 'list',
         name: 'department',
-        message: 'Which department will this role belong to?'
+        message: 'Which department will this role belong to?',
+        choices: [...departments]
     }
     ])
     // then add new role to database
@@ -62,6 +98,8 @@ async function addRole() {
 
 // When I choose to 'add an employee'
 async function addEmployee() {
+    const roles = await getRoles();
+    const managers = await getManagers();
     inquirer.prompt([{
         type: 'input',
         name: 'firstName',
@@ -84,11 +122,22 @@ async function addEmployee() {
     {
         type: 'list', 
         name: 'manager',
-        message: 'Who is the employee\'s manager?",
+        message: 'Who is the employee\'s manager?',
         choices: [
             // populate from db
             ...managers
         ]
     }
     ])
-}
+};
+
+// When I choose 'view all departments'
+
+
+// When I choose 'view all roles'
+
+
+// When I choose 'view all employees'
+
+
+// When I choose to 'update an employee'
