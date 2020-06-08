@@ -44,20 +44,53 @@ async function getDepartments() {
     return departments;
 };
 
-// Get ID"s from all tables
-async function getRoleID() {
+// Get ID's from all tables
+// View All Roles
+async function getRoleID(roleName) {
     let query = "SELECT * FROM role WHERE role.title=?";
     let args = [roleName];
     const rows = await db.query(query, args);
     return rows[0].id;
 }
 
-async function getEmpID() {
+async function getFullName(fullName) {
+    let employee = fullName.split(" ");
+    if (employee.length ==2) {
+        //  for people with 2 first names
+        return employee;
+    }
+    const last_name = employee[employee.length -1];
+    let first_name = " ";
+    for (let i=0; i < employee.length; i++) {
+        first_name = first_name + employee[i] + " ";
+    }
+    return [first_name.trim(), last_name];
+}
+
+async function getEmpID(fullName) {
     let employee = getFullName(fullName);
     let query = "SELECT id FROM employee WHERE employee.first_name=? AND employee.last_name=?";
     let args = [employee[0], employee[1]];
     const rows = await db.query(query, args);
-    return rows [0].id;
+    return rows[0].id;
+}
+
+// async function getDeptID(deptName) {
+//     let query = 'SELECT * FROM department WHERE department.name=?';
+//     let args = [deptName];
+//     const rows = await db.query(query,args);
+//     return rows[0].id;
+// }
+
+// Get employee names 
+async function getEmpNames() {
+    let query = 'SELECT * FROM employee';
+    const rows = await db.query(query);
+    let employeeNames = [];
+    for (const employee of rows) {
+        employeeNames.push(employee.first_name + " " + employee.last_name);
+    }
+    return employeeNames;
 }
 
 // ALL INQUIRER PROMPTS
@@ -71,17 +104,17 @@ async function startSel() {
             'View all departments.', 
             'View all roles.',
             'View all employees.',
+            'View all employees by manager',
+            'View all employees by departments',
+            'View department budgets',
             'Add a department',
             'Add a role.',
             'Add an employee.',
             'Update an employee role.',
             'Update a manager.',
-            'View all employees by manager',
-            'View all employees by departments',
             'Remove an employee',
             'Remove a role',
             'Remove a department',
-            'View department budgets',
             'Exit'
         ]
     }])
@@ -155,19 +188,21 @@ async function addEmployee() {
     ])
 };
 
+// SQL queries based off inquirer selections
+// The function for 'add an employee'
 async function addEmployeeDB(empInfo) {
     let roleID = await getRoleID(empInfo.role);
     let managerID = await getEmpID(empInfo.employeeName);
 
     let query = 'INSERT into employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)';
-    let args = [empInfo.first_name, empInfo.last_name, roleId, managerId];
+    let args = [empInfo.first_name, empInfo.last_name, roleID, managerID];
     const rows = await db.query(query, args);
     console.log(`${empInfo.first_name} ${empInfo.last_name} has been added.`);
 }
 
 // When I choose 'view all departments'
 async function allDepts() {
-    let query = 'SELECT * FROM department';
+    let query = "SELECT * FROM department";
     const rows = await db.query(query);
     console.table(rows);
 };
@@ -194,20 +229,6 @@ async function getRoleID() {
     return rows[0].id;
 }
 
-async function getFullName(fullName) {
-    let employee = fullName.split(" ");
-    if (employee.length ==2) {
-        //  for people with 2 first names
-        return employee;
-    }
-    const last_name = employee[employee.length -1];
-    let first_name = " ";
-    for (let i=0; i < employee.length; i++) {
-        first_name = first_name + employee[i] + " ";
-    }
-    return [first_name.trim(), last_name];
-}
-
 async function updateRole(empInfo) {
     const roleID = await getRoleID(empInfo.role);
     const employee = getFullName(empInfo.employeeName);
@@ -217,55 +238,164 @@ async function updateRole(empInfo) {
     console.log(`${employee [0]} ${employee[1]}'s role has been updated to ${empInfo.role}`);
 }
 
+// When I choose to 'update a manager'
+async function updateManager(empInfo) {
+    const manager = await getManagers();
+    let query = "UPDATE employee SET "
+}
+
+
+// When I choose to 'view employees by manager'
+async function empByManager() {
+
+}
+
+// When I choose to 'view employees by department'
+async function empByDept() {
+    let query = "SELECT first_name, last_name department.name FROM ((employee INNER JOIN role ON role_id = role.id) INNER JOIN department ON department_id = department.id);";
+    const rows = await db.query(query);
+    console.table(rows);
+}
+
+// When I choose to 'view total dept budgets'
+async function budgets(){
+
+}
+
+// When I choose to 'remove an employee'
+async function removeEmpInfo() {
+    const employees = await getEmpNames();
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'removeName',
+            message:'Which employee do you want to remove?',
+            choices: [...employees]
+        }
+    ])
+};
+
+async function removeEmp(empInfo) {
+    const employeeName = getEmpNames(empInfo.employeeName);
+
+    let query = "DELETE FROM employee WHERE first_name=? AND last_name=?";
+    let args = [employeeName[0], employeeName[1]];
+    const rows = await db.query(query, args);
+    console.log(`${employeeName[0]} ${employeeName[1]} has been removed.`);
+}
+
+// When I choose to 'remove a role'
+async function removeRoleInfo() {
+    const roles = await getRoles();
+    return inquirer.prompt([
+        {
+            type:'list',
+            name: 'removeRole',
+            message: 'Which role do you want to remove?',
+            choices: [...roles]
+        }
+    ])
+}
+
+async function removeRole(empInfo) {
+    const role = getRoles();
+}
+
+// When I choose to 'remove a department'
+async function removeDept() {
+    const depts = await getDepartments();
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'removeDept',
+            message: 'Which department do you want to remove?',
+            choices: [...depts]
+        }
+    ])
+}
+
+
 // CASE functions for first inquirer prompt selections
 async function main() {
     let exitLoop = false;
     while(!exitLoop) {
-        const prompt = await startSel();
-        
-        switch(prompt.action) {
-            case 'View all departments': {
+        // const prompt = await startSel();
+        switch(startSel()) {
+            case 'View all departments': 
                 await allDepts();
                 break;
-            }
 
-            case 'View all roles': {
+            case 'View all roles': 
                 await allRoles();
                 break;
-            }
 
-            case 'View all employees': {
+            case 'View all employees': 
                 await allEmployees();
                 break;
-            }
 
-            case 'Add a department': {
+            case 'Add a department': 
                 const newDept = await getDepartments();
                 await addDept(newDept);
                 break;
-            }
 
-            case 'Add a role': {
+            case 'Add a role': 
                 const newRole = await getRoles();
                 await addRole(newRole);
                 break;
-            }
 
-            case 'Add an employee': {
+            case 'Add an employee': 
                 const newEmp = await addEmployee();
-                console.log(newEmp);
                 await addEmployeeDB(newEmp);
                 break;
-            }
+
+            case 'Remove an employee': 
+                const employee = await removeEmpInfo();
+                await removeEmp(employee);
+                break;
+
+            case 'Remove a role': 
+                const role = await removeRoleInfo();
+                await removeRole(role);
+                break;
+
+            case 'Remove a department': 
+                const dept = await getDepartments();
+                await removeDept(dept);
+                break;
+
+            case 'View department budgets': 
+
+                await budgets();
+                break;
+
+            case 'Exit': 
+                exitLoop = true;
+                process.exit(0);
         }
     }
 }
 
-// 'View all departments.', 
-// 'View all roles.',
-// 'View all employees.',
-// 'Add a department',
-// 'Add a role.',
-// 'Add an employee.',
-// 'Update an employee role.',
-// 'Exit'
+// Close db connection when finished 
+process.on("exit", async function(code) {
+    await db.close();
+    return console.log('Exiting with code ${code}.');
+});
+
+main();
+
+// CHECK THAT ALL SELECTION OPTIONS HAVE BEEN GIVEN CODE
+// View all departments
+// View all roles
+// View all employees
+// Add a department
+// Add a role
+// Add an employee
+// Update an employee role
+// Update a manager
+// View all employees by manager
+// View all employees by departments
+// Remove an employee
+// Remove a role
+// Remove a department
+// View department budgets
+// Exit
