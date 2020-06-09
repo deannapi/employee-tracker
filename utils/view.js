@@ -1,10 +1,10 @@
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 const app = require('../index');
-let Database = require('../async-db');
+const mysql = require('mysql');
 
 // Connection to server
-const db = new Database({
+const db = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
@@ -12,41 +12,41 @@ const db = new Database({
     database: "empTracker"
 });
 
-// When I choose 'view all departments'
-// async function allDepts() {
-//     let query = "SELECT * FROM department";
-//     const rows = await db.query(query);
-//     console.table(rows);
-// };
-
 const view = {
     // When I choose 'View all Employees'
-    async allEmployees() {
-        let query = 'SELECT * FROM employee';
-        const rows = await db.query(query);
-        console.table(rows);
-        app.init();
+    allEmployees() {
+        let query = `SELECT * FROM employee`;
+        db.query(query, (err, res) => {
+            if (err) throw err;
+            console.table(res);
+            // cTable(res);
+            app.init();
+        });
     },
 
     // When I choose "View all Roles"
-    async allRoles() {
-        let query = 'SELECT * FROM role';
-        const rows = await db.query(query);
-        console.table(rows);
-        app.init();
+    allRoles() {
+        let query = `SELECT * FROM role`;
+        db.query(query, (err, res) => {
+           if (err) throw err;
+           console.table(res);
+           app.init();
+       });
     },
 
     // When I choose "View all Departments"
-    async allDepts() {
-        let query = "SELECT * FROM department";
-        const rows = await db.query(query);
-        console.table(rows);
-        app.init();
+    allDepts() {
+        let query = `SELECT * FROM department`;
+        db.query(query, (err, res) => {
+            if (err) throw err;
+            console.table(res);
+            app.init();
+        });
     },
 
     // When I choose to 'view employees by manager'
-    async  empByManager() {
-        let query =     `SELECT employee.id, employee.first_name, employee.last_name, role.title, employee.manager_id 
+    empByManager() {
+        let query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, employee.manager_id 
                     FROM employee, role, department 
                     WHERE department.id = role.department_id 
                     AND role.id = employee.role_id
@@ -80,27 +80,66 @@ const view = {
                         FROM employee, role
                         WHERE role.id = employee.role_id
                         AND employee.manager_id = ?`;
-            db.query(query, [managerID], (error, response) => {
-                if (error) throw error;
+            db.query(query, [managerID], (err, res) => {
+                if (err) throw err;
                 console.log(``);
                 console.log(`Manager: ${answer.selManager} `);
-                console.table(response);
+                console.table(res);
                 app.init();
             });
         });
     },
 
     // When I choose to 'view employees by department'
-    async empByDept() {
-        let query = "SELECT first_name, last_name department.name FROM ((employee INNER JOIN role ON role_id = role.id) INNER JOIN department ON department_id = department.id);";
-        const rows = await db.query(query);
-        console.table(rows);
+    empByDept() {
+        let query = `SELECT first_name, last_name department.name FROM ((employee INNER JOIN role ON role_id = role.id) INNER JOIN department ON department_id = department.id)`;
+        db.query(query, (err, res) => {
+            if (err) throw err;
+            console.table(res);
+            app.init();
+        });
     },
 
     // When I choose to 'view total dept budgets'
-    async budgets(){
-        console.log("put budgets here.");
+    budgets() {
+        let query = `SELECT * FROM department`;
+        db.query(query, (err, res) => {
+            if (err) throw err;
+            let deptNames = [];
+            res.forEach((depts) => {
+                deptNames.push(depts.department_name);
+            });
+        
+            inquirer.prompt([
+            {
+                name: 'deptName',
+                type: 'list',
+                message: 'Which department budget would you like to view?',
+                choices: deptNamesArr
+            }
+            ]).then((answer) => {
+                let deptID;
+                res.forEach((dept) => {
+                    if (answer.deptName === dept.department_name) {
+                        deptID = dept.id;
+                    }
+                });
+                let query = `SELECT employee.id, role.salary FROM employee, role, department
+                            WHERE ? = role.department_id AND role.id = employee.role_id
+                            GROUP BY employee.id`;
+
+                db.query(query, (err, res) => {
+                    if (err) throw err;
+                    let yearly = 0;
+                    res.forEach((employee) => {
+                        yearly += employee.salary;
+                    });
+                console.table('Annual Budget: ' + yearly.toFixed(2));
+                app.init();
+                });
+            });
+        });
     }
-}
+};
 
 module.exports = view;

@@ -1,10 +1,10 @@
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 const app = require('../index');
-let Database = require('../async-db');
+const mysql = require('mysql');
 
 // Connection to server
-const db = new Database({
+const db = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
@@ -65,7 +65,5 @@ const remove = {
         console.log(`${employeeName[0]} ${employeeName[1]} has been removed.`);
     }
 }
-
-
 
 module.exports = remove;
