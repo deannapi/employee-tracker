@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate": "sqlite3 db/employees.db < db/schema.sql",
-    "seed": "sqlite3 db/employees.db < db/seeds.sql",
-    "db": "sqlite3 db/employees.db",
+    "migrate": "mysql db/employees.db < db/schema.sql",
+    "seed": "mysql db/employees.db < db/seeds.sql",
+    "db": "mysql db/employees.db",
     "start": "node index.js"
   },
   "repository": {
@@ -30,8 +30,7 @@
     "console.table": "^0.10.0",
     "express": "^4.17.1",
     "inquirer": "^7.1.0",
-    "mysql": "^2.18.1",
-    "sqlite3": "^4.2.0"
+    "mysql2": "^2.1.0"
   },
   "devDependencies": {
     "jest": "^26.0.1"

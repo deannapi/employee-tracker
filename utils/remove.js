@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 const app = require('../index');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 // Connection to server
 const db = mysql.createConnection({
@@ -14,8 +14,8 @@ const db = mysql.createConnection({
 
 const remove = {
     // When I choose to 'remove a role'
-    async removeRoleInfo() {
-        const roles = await getRoles();
+     removeRoleInfo() {
+        const roles =  getRoles();
         return inquirer.prompt([
             {
                 type:'list',
@@ -26,13 +26,13 @@ const remove = {
         ])
     },
 
-    async removeRole(empInfo) {
+     removeRole(empInfo) {
         const role = getRoles();
     },
 
     // When I choose to 'remove a department'
-    async removeDept() {
-        const depts = await getDepartments();
+     removeDept() {
+        const depts =  getDepartments();
         return inquirer.prompt([
             {
                 type: 'list',
@@ -44,25 +44,35 @@ const remove = {
     },
 
     // When I choose to 'remove an employee'
-    async removeEmpInfo() {
-        const employees = await getEmpNames();
-        return inquirer.prompt([
-            {
-                type: 'list',
-                name: 'removeName',
-                message:'Which employee do you want to remove?',
-                choices: [...employees]
-            }
-        ])
-    },
+     removeEmp(empInfo) {
+        let query = `SELECT employee.id, employee.first_name, employee.last_name, FROM employee`;
 
-    async removeEmp(empInfo) {
-        const employeeName = getEmpNames(empInfo.employeeName);
-
-        let query = "DELETE FROM employee WHERE first_name=? AND last_name=?";
-        let args = [employeeName[0], employeeName[1]];
-        const rows = await db.query(query, args);
-        console.log(`${employeeName[0]} ${employeeName[1]} has been removed.`);
+        db.query(query, (err, res) => {
+            let empNames = [];
+            res.forEach((employee) => {
+                empNames.push(`${employee.first_name} ${employee.last_name}`);
+            });
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'selEmp',
+                    message:'Which employee do you want to remove?',
+                    choices: empNames
+                }
+            ]).then((answer) => {
+                let empID;
+                res.forEach((employee) => {
+                    if (answer.selEmp === `${employee.first_name} ${employee.last_name}`) {
+                        empID = employee.id;
+                    }
+                });
+                let query = `DELETE FROM employee WHERE employee.id = ?`;
+                db.query(query, [empID], (err, res) => {
+                    console.log(`Employee has been added.`);
+                    app.init();
+                });
+            });
+        });
     }
 }
 
