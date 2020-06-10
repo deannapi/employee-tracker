@@ -14,6 +14,7 @@ A CMS interface that uses Node.js, Inquirer and MySQL to build a command-line ap
 * [Inquirer](https://www.npmjs.com/package/inquirer)
 * [Insomnia](https://insomnia.rest/)
 * [Console.table](https://www.npmjs.com/package/console.table)
+* [Chalk](https://www.npmjs.com/package/chalk-table)
 
 
 ## :bulb: Description
@@ -60,6 +61,8 @@ A CMS interface that uses Node.js, Inquirer and MySQL to build a command-line ap
 `npm install jest --save-dev`
 
 `npm install console-table`
+
+`npm install chalk`
 
 To run the application, use the following command:
 

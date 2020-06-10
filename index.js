@@ -4,16 +4,8 @@ const view = require('./utils/view');
 const update = require('./utils/update');
 const remove = require('./utils/remove');
 const add = require('./utils/add');
-const mysql = require('mysql2');
-
-// Connection to server
-const db = mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-  user: "root",
-  password: "MochaBe@r16",
-  database: "empTracker",
-});
+const db = require('./utils/connection');
+const chalk = require('chalk');
 
 const startMenu = [
   "View all departments.",

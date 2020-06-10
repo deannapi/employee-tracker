@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/deannapi/employee-tracker#readme",
   "dependencies": {
+    "chalk": "^4.1.0",
+    "chalk-table": "^1.0.2",
     "console.table": "^0.10.0",
     "express": "^4.17.1",
     "inquirer": "^7.1.0",

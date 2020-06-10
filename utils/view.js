@@ -1,16 +1,8 @@
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 const app = require("../index");
-const mysql = require("mysql2");
-
-// Connection to server
-const db = mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-  user: "root",
-  password: "MochaBe@r16",
-  database: "empTracker",
-});
+const db = require('./connection');
+const chalk = require('chalk');
 
 const view = {
   // When I choose 'View all Employees'
@@ -18,9 +10,8 @@ const view = {
     let query = `SELECT * FROM employee`;
     db.query(query, (err, res) => {
       if (err) throw err;
-      console.log(`All Employees: `);
+      console.log(chalk.blue(`All Employees: `));
       console.table(res);
-      // cTable(res);
       app.init();
     });
   },
@@ -30,6 +21,7 @@ const view = {
     let query = `SELECT * FROM role`;
     db.query(query, (err, res) => {
       if (err) throw err;
+      console.log(`All Roles: `);
       console.table(res);
       app.init();
     });
@@ -40,6 +32,7 @@ const view = {
     let query = `SELECT * FROM department`;
     db.query(query, (err, res) => {
       if (err) throw err;
+      console.log(`All Departments: `);
       console.table(res);
       app.init();
     });

@@ -1,16 +1,7 @@
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 const app = require('../index');
-const mysql = require('mysql2');
-
-// Connection to server
-const db = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "MochaBe@r16",
-    database: "empTracker"
-});
+const db = require('./connection');
 
 const add = {
     // When I choose to 'add a department'
