@@ -1,11 +1,17 @@
-const inquirer = require('inquirer');
-let cTable = require('console.table');
-const view = require('./utils/view');
-const update = require('./utils/update');
-const remove = require('./utils/remove');
-const add = require('./utils/add');
-const db = require('./utils/connection');
-const chalk = require('chalk');
+const inquirer = require("inquirer");
+let cTable = require("console.table");
+const view = require("./utils/view");
+const update = require("./utils/update");
+const remove = require("./utils/remove");
+const add = require("./utils/add");
+const db = require("./utils/connection");
+const chalk = require("chalk");
+
+db.connect((err) => {
+  if (err) throw err;
+  console.log(chalk.magenta('Employee Tracker'));
+  init();
+});
 
 const startMenu = [
   "View all departments.",
@@ -38,19 +44,20 @@ const init = () => {
     ])
     .then((answer) => {
       switch (answer.startSelection) {
-        case "View all departments":
+        case 'View all departments':
           view.allDepts();
           break;
 
-        case "View all roles":
+        case 'View all roles':
           view.allRoles();
           break;
 
-        case "View all employees":
+        case 'View all employees':
+          console.log(chalk.redBright('You selected "View all Employees"'));
           view.allEmployees();
           break;
 
-        case "View all employees by manager":
+        case 'View all employees by manager':
           view.empByManager();
           break;
 
@@ -100,11 +107,6 @@ const init = () => {
       }
     });
 };
-
-db.connect((err) => {
-  if (err) throw err;
-  init();
-});
 
 exports.init = init;
 

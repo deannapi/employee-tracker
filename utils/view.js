@@ -10,8 +10,11 @@ const view = {
     let query = `SELECT * FROM employee`;
     db.query(query, (err, res) => {
       if (err) throw err;
-      console.log(chalk.blue(`All Employees: `));
-      console.table(res);
+      // console.log(chalk.blueBright(`All Employees: `));
+      // console.table(res);
+      const table = cTable.getTable(res);
+      console.log(chalk.redBright(table));
+      // cTable(res);
       app.init();
     });
   },
@@ -21,7 +24,7 @@ const view = {
     let query = `SELECT * FROM role`;
     db.query(query, (err, res) => {
       if (err) throw err;
-      console.log(`All Roles: `);
+      console.log(chalk.blueBright(`All Roles: `));
       console.table(res);
       app.init();
     });
@@ -32,7 +35,7 @@ const view = {
     let query = `SELECT * FROM department`;
     db.query(query, (err, res) => {
       if (err) throw err;
-      console.log(`All Departments: `);
+      console.log(chalk.blueBright(`All Departments: `));
       console.table(res);
       app.init();
     });
@@ -79,7 +82,7 @@ const view = {
         db.query(query, [managerID], (err, res) => {
           if (err) throw err;
           console.log(``);
-          console.log(`Manager: ${answer.selManager} `);
+          console.log(chalk.blueBright(`Manager: ${answer.selManager} `));
           console.table(res);
           app.init();
         });

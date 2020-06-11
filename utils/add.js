@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 const app = require('../index');
 const db = require('./connection');
+const chalk = require('chalk');
 
 const add = {
     // When I choose to 'add a department'
@@ -17,7 +18,7 @@ const add = {
             let query = `INSERT INTO department (department_name) VALUES (?)`;
             db.query(query, (err, res) => {
                 if (err) throw err;
-                console.log('${department.department_name} has been added a new department.');
+                console.log(chalk.blueBright('${department.department_name} has been added a new department.'));
             })
         })
     },
@@ -62,7 +63,7 @@ const add = {
                 let params = [addedRole, answer.salary, deptID];
                 db.query('INSERT INTO role (title, salary, department_id) VALUE (?,?,?)', params, (err, res) => {
                     if (err) throw err;
-                    console.log('New role has been added.');
+                    console.log(chalk.blueBright('New role has been added.'));
                     app.init();
                 }
                 )
@@ -100,19 +101,13 @@ const add = {
                 type: 'list',
                 name: 'roleName',
                 message: 'What is the role of the employee?',
-                choices: [
-                    // get from db
-                    ...roles
-                ]
+                choices: roles
             },
             {
                 type: 'list', 
                 name: 'manager',
                 message: 'Who is the employee\'s manager?',
-                choices: [
-                    // populate from db
-                    ...managers
-                ]
+                choices: managers
             }
             // the add to DB
         ]).then((answer) => {

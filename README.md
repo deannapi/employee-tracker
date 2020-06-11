@@ -8,7 +8,6 @@ A CMS interface that uses Node.js, Inquirer and MySQL to build a command-line ap
 
 ## :hammer: Tools
 * [Express.js](https://expressjs.com/)
-* [Jest](https://jestjs.io/en/)
 * [Node.js](https://nodejs.org/en/)
 * [MySQL2](https://www.npmjs.com/package/mysql2)
 * [Inquirer](https://www.npmjs.com/package/inquirer)
@@ -57,8 +56,6 @@ A CMS interface that uses Node.js, Inquirer and MySQL to build a command-line ap
 `npm install inquirer`
 
 `npm install mysql2`
-
-`npm install jest --save-dev`
 
 `npm install console-table`
 

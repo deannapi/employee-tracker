@@ -1,7 +1,8 @@
-const inquirer = require('inquirer');
-const cTable = require('console.table');
+const inquirer = require("inquirer");
+const cTable = require("console.table");
 const app = require("../index");
-const db = require('./connection');
+const db = require("./connection");
+const chalk = require("chalk");
 
 const update = {
   // When I choose to 'update an employee role'
@@ -20,37 +21,43 @@ const update = {
         res.forEach((role) => {
           roles.push(role.title);
         });
-        inquirer.prompt([
-          {
-            type: 'list',
-            name: 'selEmp',
-            message: 'Select an employee to update their role.',
-            choices: empNames
-          },
-          {
-            type: 'list',
-            name: 'selRole',
-            message: 'Select the new role.',
-            choices: roles
-          }
-        ]).then((answer) => {
-          let newtitleID, employeeID;
-          res.forEach((role) => {
-            if (answer.selRole === role.title) {
-              newtitleID = role.id;
-            }
+        inquirer
+          .prompt([
+            {
+              type: "list",
+              name: "selEmp",
+              message: "Select an employee to update their role.",
+              choices: empNames,
+            },
+            {
+              type: "list",
+              name: "selRole",
+              message: "Select the new role.",
+              choices: roles,
+            },
+          ])
+          .then((answer) => {
+            let newtitleID, employeeID;
+            res.forEach((role) => {
+              if (answer.selRole === role.title) {
+                newtitleID = role.id;
+              }
+            });
+            res.forEach((employee) => {
+              if (
+                answer.selEmp === `${employee.first_name} ${employee.last_name}`
+              ) {
+                employeeID = employee.id;
+              }
+            });
+            let query = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`;
+            db.query(query, [newtitleID, employeeID], (err, res) => {
+              console.log(
+                `${employee.first_name} ${employee.last_name}'s role has been updated.`
+              );
+              app.init();
+            });
           });
-          res.forEach((employee) => {
-            if (answer.selEmp === `${employee.first_name} ${employee.last_name}`) {
-              employeeID = employee.id;
-            }
-          });
-          let query = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`;
-          db.query(query, [newtitleID, employeeID], (err, res) => {
-            console.log(`${employee.first_name} ${employee.last_name}'s role has been updated.`);
-            app.init();
-          });
-        });
       });
     });
   },
@@ -60,6 +67,7 @@ const update = {
     let query = `SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id FORM employee`;
     db.query(query, (err, res) => {
       let names = [];
+
       res.forEach((employee) => {
         names.push(`${employee.first_name} ${employee.last_name}`);
       });
