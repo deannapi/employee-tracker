@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate": "mysql db/employees.db < db/schema.sql",
-    "seed": "mysql db/employees.db < db/seeds.sql",
-    "db": "mysql db/employees.db",
+    "migrate": "mysql db/empTracker.db < db/schema.sql",
+    "seed": "mysql db/empTracker.db < db/seeds.sql",
+    "db": "mysql db/empTracker.db",
     "start": "node index.js"
   },
   "repository": {

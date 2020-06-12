@@ -14,20 +14,20 @@ db.connect((err) => {
 });
 
 const startMenu = [
-  "View all departments.",
-  "View all roles.",
-  "View all employees.",
-  "View all employees by manager.",
-  "View all employees by departments.",
-  "View department budgets.",
-  "Add a department.",
-  "Add a role.",
-  "Add an employee.",
-  "Update an employee role.",
-  "Update a manager.",
+  "View all departments",
+  "View all roles",
+  "View all employees",
+  "View employees by manager",
+  "View employees by department",
+  "View department budgets",
+  "Add a department",
+  "Add a role",
+  "Add an employee",
+  "Update an employee role",
+  "Update a manager",
   "Remove an employee",
-  "Remove a role.",
-  "Remove a department.",
+  "Remove a role",
+  "Remove a department",
   "Exit",
 ];
 
@@ -44,7 +44,7 @@ const init = () => {
     ])
     .then((answer) => {
       switch (answer.startSelection) {
-        case 'View all departments':
+        case 'View all departments': 
           view.allDepts();
           break;
 
@@ -53,15 +53,14 @@ const init = () => {
           break;
 
         case 'View all employees':
-          console.log(chalk.redBright('You selected "View all Employees"'));
           view.allEmployees();
           break;
 
-        case 'View all employees by manager':
+        case 'View employees by manager':
           view.empByManager();
           break;
 
-        case "View all employees by departments":
+        case "View employees by department":
           view.empByDept();
           break;
 
