@@ -12,7 +12,6 @@ const view = {
       if (err) throw err;
       const table = cTable.getTable(res);
       console.log(chalk.blue(table));
-      // cTable(res);
       app.init();
     });
   },

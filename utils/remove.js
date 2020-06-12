@@ -13,6 +13,7 @@ const remove = {
       let roles = [];
       res.forEach((role) => {
         roles.push(role.title);
+      });
         inquirer
         .prompt([
           {
@@ -32,12 +33,11 @@ const remove = {
           let query = `DELETE FROM role WHERE role.id = ?`;
           db.query(query, [roleID], (error, response) => {
             if (error) throw error;
-            console.log(chalk.blueBright(`Role has been removed.`));
+            console.log(chalk.blue(`Role has been removed.`));
             app.init();
           });
         });
       });
-    });
   },
 
   // When I choose to 'remove a department'
@@ -68,7 +68,7 @@ const remove = {
           let query = `DELETE FROM department WHERE department.id = ?`;
           db.query(query, [deptID], (err, res) => {
             if (err) throw err;
-            console.log(chalk.blueBright(`Department has been removed.`));
+            console.log(chalk.blue(`Department has been removed.`));
             app.init();
           });
         });
@@ -76,10 +76,11 @@ const remove = {
   },
 
   // When I choose to 'remove an employee'
-  removeEmp(empInfo) {
-    let query = `SELECT employee.id, employee.first_name, employee.last_name, FROM employee`;
+  removeEmp() {
+    let query = `SELECT employee.id, employee.first_name, employee.last_name FROM employee`;
 
     db.query(query, (err, res) => {
+      if (err) throw err;
       let empNames = [];
       res.forEach((employee) => {
         empNames.push(`${employee.first_name} ${employee.last_name}`);
@@ -104,7 +105,7 @@ const remove = {
           });
           let query = `DELETE FROM employee WHERE employee.id = ?`;
           db.query(query, [empID], (err, res) => {
-            console.log(`Employee has been added.`);
+            console.log(chalk.blue(`Employee has been added.`));
             app.init();
           });
         });
