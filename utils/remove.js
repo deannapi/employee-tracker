@@ -6,15 +6,14 @@ const chalk = require("chalk");
 
 const remove = {
   // When I choose to 'remove a role'
-  removeRoleInfo() {
+  removeRole() {
     let query = `SELECT role.id, role.title FROM role`;
     db.query(query, (err, res) => {
       if (err) throw err;
       let roles = [];
       res.forEach((role) => {
         roles.push(role.title);
-      });
-      inquirer
+        inquirer
         .prompt([
           {
             type: "list",
@@ -30,25 +29,25 @@ const remove = {
               roleID = role.id;
             }
           });
-          let query = `DELETE FROM role WHERE rold.id = ?`;
-          db.query(query, [roleID], (err, res) => {
-            if (err) throw err;
-            console.log(``);
+          let query = `DELETE FROM role WHERE role.id = ?`;
+          db.query(query, [roleID], (error, response) => {
+            if (error) throw error;
             console.log(chalk.blueBright(`Role has been removed.`));
             app.init();
           });
         });
+      });
     });
   },
 
   // When I choose to 'remove a department'
   removeDept() {
-    let query = `SELECT department.id, department.title FROM department`;
+    let query = `SELECT department.id, department.name FROM department`;
     db.query(query, (err, res) => {
       if (err) throw err;
       let depts = [];
       res.forEach((dept) => {
-        depts.push(dept.title);
+        depts.push(dept.name);
       });
       inquirer
         .prompt([
@@ -62,14 +61,13 @@ const remove = {
         .then((answer) => {
           let deptID;
           res.forEach((dept) => {
-            if (answer.removeDept === dept.title) {
+            if (answer.removeDept === dept.name) {
               deptID = dept.id;
             }
           });
           let query = `DELETE FROM department WHERE department.id = ?`;
           db.query(query, [deptID], (err, res) => {
             if (err) throw err;
-            console.log(``);
             console.log(chalk.blueBright(`Department has been removed.`));
             app.init();
           });
