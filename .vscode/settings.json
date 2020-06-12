@@ -5,5 +5,10 @@
         "depts",
         "id",
         "increment"
+    ],
+    "cSpell.ignoreWords": [
+        "id",
+        "newtitle",
+        "newtitle id"
     ]
 }

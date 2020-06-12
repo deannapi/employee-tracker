@@ -80,11 +80,11 @@ const init = () => {
           add.addEmployee();
           break;
 
-        case "Update an employee role.":
+        case "Update an employee role":
           update.updateRole();
           break;
 
-        case "Update a manager.":
+        case "Update a manager":
           update.updateManager();
           break;
 

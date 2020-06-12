@@ -11,12 +11,14 @@ const update = {
     FROM employee, role, department WHERE department.id = role.department_id AND role.id = employee.role_id`;
 
     db.query(query, (err, res) => {
+      if (err) throw err;
       let empNames = [];
       res.forEach((employee) => {
         empNames.push(`${employee.first_name} ${employee.last_name}`);
       });
       let query = `SELECT role.id, role.title FROM role`;
       db.query(query, (err, res) => {
+        if (err) throw err;
         let roles = [];
         res.forEach((role) => {
           roles.push(role.title);
@@ -52,9 +54,7 @@ const update = {
             });
             let query = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`;
             db.query(query, [newtitleID, employeeID], (err, res) => {
-              console.log(
-                `${employee.first_name} ${employee.last_name}'s role has been updated.`
-              );
+              console.log(chalk.blue(`Role has been updated.`));
               app.init();
             });
           });
@@ -64,26 +64,31 @@ const update = {
 
   // When I choose to 'update a manager'
   updateManager() {
-    let query = `SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id FORM employee`;
-    db.query(query, (err, res) => {
-      let names = [];
+    let query = `SELECT employee.id, employee.first_name, employee.last_name FROM employee
+                WHERE manager_id IS NULL`;
 
+    db.query(query, (err, res) => {
+      if (err) throw err;
+      let managers = [];
       res.forEach((employee) => {
-        names.push(`${employee.first_name} ${employee.last_name}`);
+        managers.push(`${employee.first_name} ${employee.last_name}`);
       });
+      // const table = cTable.getTable(managers);
+      // console.log(chalk.redBright(table));
       inquirer
         .prompt([
           {
-            typ: "list",
+            type: "list",
             name: "selName",
             message: "Which employee needs a manager update?",
-            choices: names,
+            choices: managers,
           },
+          //  need to put a console.log here to show manager selection
           {
             type: "list",
             name: "newManager",
             message: "Select the new manager",
-            choices: names,
+            choices: managers,
           },
         ])
         .then((answer) => {
@@ -100,16 +105,14 @@ const update = {
             ) {
               managerID = employee.id;
             }
+            let query = `UPDATE employee SET employee.manager_id = ? WHERE employee.id = ?`;
+            db.query(query, [managerID, employeeID], (err, res) => {
+              if (err) throw err;
+              console.log(chalk.blue(`Manager has been updated.`));
+              app.init();
+            });
           });
         });
-      let query = `UPDATE employee SET employee.manager_id = ? WHERE employee.id = ?`;
-      db.query(query, [managerID, employeeID], (err, res) => {
-        if (err) throw err;
-        console.log(
-          `${employee.first_name} ${employee.last_name}'s manager has been updated.`
-        );
-        app.init();
-      });
     });
   },
 };
