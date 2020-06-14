@@ -48,7 +48,7 @@ A CMS interface that uses Node.js, Inquirer and MySQL to build a command-line ap
         VIEW the total utilized budget of a departments - i.e., the combined salaries of all employees in that department. 
 
 ## :movie_camera: Demo
-
+![](emp_tracker.gif)
 
 ## :memo: Instructions
 `npm init`
