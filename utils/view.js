@@ -77,8 +77,8 @@ const view = {
             const table = cTable.getTable(response);
             console.log(chalk.magenta(`Manager: ${answer.selManager} `));
             console.log(chalk.blue(table));
-            app.init();
           });
+          app.init();
         });
     });
   },

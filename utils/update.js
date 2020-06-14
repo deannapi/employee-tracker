@@ -3,6 +3,7 @@ const cTable = require("console.table");
 const app = require("../index");
 const db = require("./connection");
 const chalk = require("chalk");
+require('events').EventEmitter.defaultMaxListeners = 25;
 
 const update = {
   // When I choose to 'update an employee role'
@@ -54,7 +55,7 @@ const update = {
             });
             let query = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`;
             db.query(query, [newtitleID, employeeID], (err, res) => {
-              console.log(chalk.blue(`Role has been updated.`));
+              console.log(chalk.red(`Role has been updated.`));
               app.init();
             });
           });
@@ -73,17 +74,21 @@ const update = {
       res.forEach((employee) => {
         managers.push(`${employee.first_name} ${employee.last_name}`);
       });
-      // const table = cTable.getTable(managers);
-      // console.log(chalk.redBright(table));
-      inquirer
+      db.query(`SELECT employee.id, employee.first_name, employee.last_name FROM employee
+      WHERE manager_id IS NOT NULL`, (err, res) => {
+        if (err) throw err;
+        let employees = [];
+        res.forEach((employee) => {
+          employees.push(`${employee.first_name} ${employee.last_name}`);
+        })
+        inquirer
         .prompt([
           {
             type: "list",
             name: "selName",
             message: "Which employee needs a manager update?",
-            choices: managers,
+            choices: employees,
           },
-          //  need to put a console.log here to show manager selection
           {
             type: "list",
             name: "newManager",
@@ -99,7 +104,7 @@ const update = {
             ) {
               employeeID = employee.id;
             }
-            if (
+            else if (
               answer.newManager ===
               `${employee.first_name} ${employee.last_name}`
             ) {
@@ -108,11 +113,12 @@ const update = {
             let query = `UPDATE employee SET employee.manager_id = ? WHERE employee.id = ?`;
             db.query(query, [managerID, employeeID], (err, res) => {
               if (err) throw err;
-              console.log(chalk.blue(`Manager has been updated.`));
-              app.init();
             });
           });
+          console.log(chalk.red(`Manager has been updated.`));
+          app.init();
         });
+      });
     });
   },
 };

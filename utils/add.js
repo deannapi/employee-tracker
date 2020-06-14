@@ -19,7 +19,7 @@ const add = {
             let query = `INSERT INTO department (name) VALUES (?)`;
             db.query(query, [answer.newDept], (err, res) => {
                 if (err) throw err;
-                console.log(chalk.blueBright(`New department added successfully.`));
+                console.log(chalk.red(`New department added successfully.`));
                 app.init();
             })
         });
@@ -65,7 +65,7 @@ const add = {
                 let params = [addedRole, answer.salary, deptID];
                 db.query('INSERT INTO role (title, salary, department_id) VALUES (?,?,?)', params, (error, response) => {
                     if (error) throw error;
-                    console.log(chalk.blueBright('New role has been added.'));
+                    console.log(chalk.red('New role has been added.'));
                     app.init();
                 }
                 )
@@ -133,7 +133,7 @@ const add = {
                     let params = [answer.firstName, answer.lastName, roleID, managerID];
                     db.query(query, params, (err, res) => {
                         if (err) throw err;
-                        console.log(chalk.blue('Employee has been added.'));
+                        console.log(chalk.red('Employee has been added.'));
                         app.init();
                     });
                 });

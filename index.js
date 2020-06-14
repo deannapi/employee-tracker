@@ -6,6 +6,7 @@ const remove = require("./utils/remove");
 const add = require("./utils/add");
 const db = require("./utils/connection");
 const chalk = require("chalk");
+const { Pool } = require("mysql2");
 
 db.connect((err) => {
   if (err) throw err;
@@ -101,9 +102,18 @@ const init = () => {
           break;
 
         case "Exit":
-          db.end();
-          break;
-      }
+          // let connection = pool.getConnection();
+          // try {
+          //   db.end();
+          // } finally {
+            // connection.release();
+            db.end();
+            console.log(chalk.redBright('Goodbye.'));  
+          }
+          // db.end();
+          
+          // break;
+      // }
     });
 };
 

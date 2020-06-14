@@ -33,7 +33,7 @@ const remove = {
           let query = `DELETE FROM role WHERE role.id = ?`;
           db.query(query, [roleID], (error, response) => {
             if (error) throw error;
-            console.log(chalk.blue(`Role has been removed.`));
+            console.log(chalk.red(`Role has been removed.`));
             app.init();
           });
         });
@@ -68,7 +68,7 @@ const remove = {
           let query = `DELETE FROM department WHERE department.id = ?`;
           db.query(query, [deptID], (err, res) => {
             if (err) throw err;
-            console.log(chalk.blue(`Department has been removed.`));
+            console.log(chalk.red(`Department has been removed.`));
             app.init();
           });
         });
@@ -105,7 +105,7 @@ const remove = {
           });
           let query = `DELETE FROM employee WHERE employee.id = ?`;
           db.query(query, [empID], (err, res) => {
-            console.log(chalk.blue(`Employee has been added.`));
+            console.log(chalk.red(`Employee has been added.`));
             app.init();
           });
         });
